@@ -1,7 +1,10 @@
 <<<<<<< HEAD
+<<<<<<< Updated upstream
 
 .gradle/
 =======
+=======
+>>>>>>> Stashed changes
 # Created by https://www.toptal.com/developers/gitignore/api/intellij+all,windows,java,gradle
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,windows,java,gradle
 
@@ -173,4 +176,11 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+all,windows,java,gradle
+<<<<<<< Updated upstream
 >>>>>>> 3953bb2 (Reapply "#5 - 스프링 부트 프로젝트 시작")
+=======
+=======
+
+.gradle/
+>>>>>>> origin/main
+>>>>>>> Stashed changes
