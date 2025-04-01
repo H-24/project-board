@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-<<<<<<< HEAD
     <list default="true" id="2b70b239-2d17-4a51-b0a4-6301f4c470bd" name="Changes" comment="" />
-=======
-    <list default="true" id="2b70b239-2d17-4a51-b0a4-6301f4c470bd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/project-board.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/project-board.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
->>>>>>> d58cf40 (소스 디렉토리 문제 수정)
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -82,32 +74,6 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-<<<<<<< HEAD
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.project-board [:org.example.projectboard.ProjectBoardApplication.main()].executor": "Run",
-    "JUnit.ProjectBoardApplicationTests.executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.ProjectBoardApplication.executor": "Run",
-    "git-widget-placeholder": "feature/#7-springboot",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/pyj03/Documents/github/project-board/src",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
-=======
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Gradle.project-board [:org.example.projectboard.ProjectBoardApplication.main()].executor&quot;: &quot;Run&quot;,
@@ -120,7 +86,6 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Spring Boot.ProjectBoardApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/pyj03/Documents/github/project-board/src&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -133,10 +98,9 @@
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
->>>>>>> d58cf40 (소스 디렉토리 문제 수정)
   }
 }</component>
-  <component name="RunManager" selected="Spring Boot.ProjectBoardApplication">
+  <component name="RunManager">
     <configuration name="ProjectBoardApplicationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="project-board.test" />
       <extension name="coverage">
@@ -189,8 +153,6 @@
       <workItem from="1743100286278" duration="3822000" />
       <workItem from="1743495531522" duration="1094000" />
       <workItem from="1743496666546" duration="6188000" />
-      <workItem from="1743522126427" duration="337000" />
-      <workItem from="1743522476592" duration="1381000" />
     </task>
     <servers />
   </component>
