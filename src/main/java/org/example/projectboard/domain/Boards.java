@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
+//import org.springframework.data.annotation.CreatedBy;
+//import org.springframework.data.annotation.CreatedDate;
+//import org.springframework.data.annotation.LastModifiedBy;
+//import org.springframework.data.annotation.LastModifiedDate;
+//
+//import java.time.LocalDateTime;
+//import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -25,7 +25,7 @@ import java.util.Set;
         @Index(columnList = "createdBy")
 })    // 인덱스 기능
 @Entity
-public class Boards {
+public class Boards extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,11 +39,6 @@ public class Boards {
     @OrderBy("id")
     @OneToMany(mappedBy = "boards", cascade = CascadeType.ALL)
     private final Set<ArticleComments> articleComments = new LinkedHashSet<>();
-
-    @CreatedDate @Column(nullable = false) private LocalDateTime createdAt;    // 생성일시
-    @CreatedBy @Column(nullable = false, length = 100) private String createdBy;    // 생성자
-    @LastModifiedDate @Column(nullable = false) private LocalDateTime modifiedAt;   // 수정일시
-    @LastModifiedBy @Column(nullable = false, length = 100) private String modifiedBy;  // 수정자
 
     protected Boards() {}
 
