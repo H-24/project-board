@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.rest.core.annotation.RestResource;
 //import org.springframework.data.annotation.CreatedBy;
 //import org.springframework.data.annotation.CreatedDate;
 //import org.springframework.data.annotation.LastModifiedBy;
@@ -21,7 +22,7 @@ import java.util.Set;
 @Table(indexes = {
         @Index(columnList = "title"),
         @Index(columnList = "hashtag"),
-        @Index(columnList = "createAt"),
+        @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })    // 인덱스 기능
 @Entity
@@ -38,6 +39,8 @@ public class Boards extends AuditingFields {
 
     @OrderBy("id")
     @OneToMany(mappedBy = "boards", cascade = CascadeType.ALL)
+    @RestResource(path = "article-comments")
+    @ToString.Exclude
     private final Set<ArticleComments> articleComments = new LinkedHashSet<>();
 
     protected Boards() {}

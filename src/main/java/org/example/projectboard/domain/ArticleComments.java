@@ -28,7 +28,9 @@ public class ArticleComments extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false) private Boards boards;  // 게시글 (ID)
+    @ManyToOne(optional = false)
+    private Boards boards;  // 게시글 (ID)
+
     @Column(nullable = false, length = 500) private String content; // 내용
 
     protected ArticleComments() {}
