@@ -3,10 +3,13 @@
 **/build/
 !src/**/build/
 
+#querydsl
+/src/main/generated
+
 # IntelliJ IDEA
 .idea/
 !*.iml
-.idea/**/workspace.xml
+.idea/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
@@ -20,6 +23,10 @@
 .idea/**/sonarlint/
 .idea/httpRequests
 .idea/caches/build_file_checksums.ser
+
+#out
+out/production
+out/test
 
 # IntelliJ IDEA optional 공유 설정
 !.idea/codeStyles
