@@ -43,7 +43,7 @@ class BoardsControllerTest {
         // When & Then
         mvc.perform(get("/boards/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("boards/details"))
                 .andExpect(model().attributeExists("boards"));
     }
@@ -57,7 +57,7 @@ class BoardsControllerTest {
         // When & Then
         mvc.perform(get("/boards/search"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("boards/search"));
     }
 
@@ -71,6 +71,6 @@ class BoardsControllerTest {
         // When & Then
         mvc.perform(get("/boards/search-hashtag"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("boards/search-hashtag"));    }
 }
