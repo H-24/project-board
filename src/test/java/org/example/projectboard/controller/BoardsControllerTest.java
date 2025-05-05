@@ -34,7 +34,6 @@ class BoardsControllerTest {
                 .andExpect(model().attributeExists("boards"));
     }
 
-    @Disabled("구현중")
     @DisplayName("[view] [GET] 게시글 리스트 상세 페이지 - 정상 호출")
     @Test
     public void givenNothing_whenRequestingBoardView_thenReturnsBoardView() throws Exception {
