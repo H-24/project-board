@@ -37,7 +37,7 @@ class ArticleCommentServiceTest {
         //Given
         Long articleId = 1L;
         ArticleComments expected = createArticleComments("content");
-        given(articleCommentsRepository.findByArticle_Id(articleId)).willReturn(List.of(expected));
+        given(articleCommentsRepository.findByBoards_Id(articleId)).willReturn(List.of(expected));
 
         //When
         List<ArticleCommentsDto> actual = sut.searchArticleComments(articleId);
@@ -46,7 +46,7 @@ class ArticleCommentServiceTest {
         assertThat(actual)
                 .hasSize(1)
                 .first().hasFieldOrPropertyWithValue("content", expected.getContent());
-        then(articleCommentsRepository).should().findByArticle_Id(articleId);
+        then(articleCommentsRepository).should().findByBoards_Id(articleId);
     }
 
     @DisplayName("댓글 정보를 입력하면, 댓글을 저장한다.")

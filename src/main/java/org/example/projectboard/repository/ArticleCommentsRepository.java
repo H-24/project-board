@@ -18,7 +18,7 @@ public interface ArticleCommentsRepository extends
         QuerydslPredicateExecutor<ArticleComments>,
         QuerydslBinderCustomizer<QArticleComments> {
 
-    List<ArticleComments> findByArticle_Id(Long articleId);
+    List<ArticleComments> findByBoards_Id(Long articleId);
     @Override
     default void customize(QuerydslBindings bindings, QArticleComments root) {
         bindings.excludeUnlistedProperties(true);

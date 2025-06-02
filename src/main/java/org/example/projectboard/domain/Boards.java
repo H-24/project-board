@@ -26,10 +26,13 @@ public class Boards extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false) private UserAccount userAccount;
+    @ManyToOne(optional = false)
+    private UserAccount userAccount;
 
-    @Column(nullable = false, length = 255) private String title;   // 제목
-    @Column(nullable = false, length = 10000) private String content; // 내용
+    @Column(nullable = false, length = 255)
+    private String title;   // 제목
+    @Column(nullable = false, length = 10000)
+    private String content; // 내용
 
     private String hashtag; // 해시태그
 
