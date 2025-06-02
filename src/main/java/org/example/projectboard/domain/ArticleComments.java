@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)     // 디버깅시 필요, 출력시 부모필드 사용가능
 @Table(indexes = {
         @Index(columnList = "content"),
         @Index(columnList = "createdAt"),
@@ -28,20 +28,20 @@ public class ArticleComments extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    private Boards boards;  // 게시글 (ID)
-
+    @ManyToOne(optional = false) private Boards boards;  // 게시글 (ID)
+    @ManyToOne(optional = false) private UserAccount userAccount;
     @Column(nullable = false, length = 500) private String content; // 내용
 
     protected ArticleComments() {}
 
-    private ArticleComments(Boards boards, String content) {
+    private ArticleComments(Boards boards, UserAccount userAccount, String content) {
         this.boards = boards;
+        this.userAccount = userAccount;
         this.content = content;
     }
 
-    public static ArticleComments of(Boards boards, String content) {
-        return new ArticleComments(boards, content);
+    public static ArticleComments of(Boards boards, UserAccount userAccount, String content) {
+        return new ArticleComments(boards, userAccount, content);
     }
 
     @Override
