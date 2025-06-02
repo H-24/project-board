@@ -1,41 +1,44 @@
 package org.example.projectboard.dto;
 
 import org.example.projectboard.domain.Boards;
-import org.example.projectboard.domain.UserAccount;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
-/**
- * DTO for {@link org.example.projectboard.domain.Boards}
- */
-public record BoardsDto(
+public record ArticleWithCommentsDto(
         Long id,
         UserAccountDto userAccountDto,
+        Set<ArticleCommentsDto> articleCommentsDto,
         String title,
         String content,
         String hashtag,
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime modifiedAt,
-        String modifiedBy) implements Serializable {
-    public static BoardsDto of(
+        String modifiedBy
+) {
+    public static ArticleWithCommentsDto of(
             Long id,
             UserAccountDto userAccountDto,
-            String title,
-            String content,
+            Set<ArticleCommentsDto> articleCommentsDto,
+            String title, String content,
             String hashtag,
             LocalDateTime createdAt,
             String createdBy,
             LocalDateTime modifiedAt,
             String modifiedBy) {
-        return new BoardsDto(id, userAccountDto, title, content, hashtag, createdAt, createdBy, modifiedAt,modifiedBy);
+        return new ArticleWithCommentsDto(id, userAccountDto, articleCommentsDto, title, content, hashtag, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
-    public static BoardsDto from(Boards entity) {
-        return new BoardsDto(
+    public static ArticleWithCommentsDto from(Boards entity) {
+        return new ArticleWithCommentsDto(
                 entity.getId(),
                 UserAccountDto.from(entity.getUserAccount()),
+                entity.getArticleComments().stream()
+                        .map(ArticleCommentsDto::from)
+                        .collect(Collectors.toCollection(LinkedHashSet::new)),
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getHashtag(),
@@ -47,3 +50,5 @@ public record BoardsDto(
     }
 
 }
+
+

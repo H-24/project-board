@@ -4,6 +4,8 @@ import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import org.example.projectboard.domain.Boards;
 import org.example.projectboard.domain.QBoards;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -16,11 +18,12 @@ public interface BoardsRepository extends
         QuerydslPredicateExecutor<Boards>,
         QuerydslBinderCustomizer<QBoards> {
 
+    Page<Boards> findByTitle(String title, Pageable pageable);
+
     @Override
     default void customize(QuerydslBindings bindings, QBoards root) {
         bindings.excludeUnlistedProperties(true);
         bindings.including(root.title, root.content, root.hashtag, root.createdAt, root.createdBy);
-        // bindings.bind(root.title).first(StringExpression::likeIgnoreCase);
         bindings.bind(root.title).first(StringExpression::containsIgnoreCase);
         bindings.bind(root.content).first(StringExpression::containsIgnoreCase);
         bindings.bind(root.hashtag).first(StringExpression::containsIgnoreCase);

@@ -10,12 +10,15 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.List;
+
 @RepositoryRestResource(path = "article-comments")
 public interface ArticleCommentsRepository extends
         JpaRepository<ArticleComments, Long>,
         QuerydslPredicateExecutor<ArticleComments>,
         QuerydslBinderCustomizer<QArticleComments> {
 
+    List<ArticleComments> findByArticle_Id(Long articleId);
     @Override
     default void customize(QuerydslBindings bindings, QArticleComments root) {
         bindings.excludeUnlistedProperties(true);
