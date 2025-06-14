@@ -45,6 +45,7 @@ class BoardServiceTest {
         //Then
         assertThat(boards).isEmpty();
         then(boardsRepository).should().findAll(pageable);
+
     }
 
     @DisplayName("검색어와 함께 게시글을 검색하면, 게시글 페이지를 반환한다.")
@@ -54,14 +55,14 @@ class BoardServiceTest {
         SearchType searchType = SearchType.TITLE;
         String searchKeyword = "title";
         Pageable pageable = Pageable.ofSize(20);
-        given(boardsRepository.findByTitle(searchKeyword, pageable)).willReturn(Page.empty());
+        given(boardsRepository.findByTitleContaining(searchKeyword, pageable)).willReturn(Page.empty());
 
         // When
         Page<BoardsDto> articles = sut.searchBoards(searchType, searchKeyword, pageable);
 
         // Then
         assertThat(articles).isEmpty();
-        then(boardsRepository).should().findByTitle(searchKeyword, pageable);
+        then(boardsRepository).should().findByTitleContaining(searchKeyword, pageable);
     }
 
     @DisplayName("게시글을 조회하면, 해당 게시글 반환")

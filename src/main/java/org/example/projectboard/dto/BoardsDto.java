@@ -46,4 +46,13 @@ public record BoardsDto(
         );
     }
 
+    // dto 정보로 entity를 새로 하나 생성해서 저장
+    public Boards toEntity() {
+        return Boards.of(
+                userAccountDto.toEntity(),
+                title,
+                content,
+                hashtag
+        );
+    }
 }
