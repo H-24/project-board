@@ -18,7 +18,11 @@ public interface BoardsRepository extends
         QuerydslPredicateExecutor<Boards>,
         QuerydslBinderCustomizer<QBoards> {
 
-    Page<Boards> findByTitle(String title, Pageable pageable);
+    Page<Boards> findByTitleContaining(String title, Pageable pageable);
+    Page<Boards> findByContentContaining(String content, Pageable pageable);
+    Page<Boards> findByUserAccount_UserId(String userId, Pageable pageable);
+    Page<Boards> findByUserAccount_Nickname(String nickname, Pageable pageable);
+    Page<Boards> findByHashtag(String hashtag, Pageable pageable);
 
     @Override
     default void customize(QuerydslBindings bindings, QBoards root) {
