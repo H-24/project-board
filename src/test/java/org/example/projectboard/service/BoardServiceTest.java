@@ -161,6 +161,20 @@ class BoardServiceTest {
         then(boardsRepository).should().deleteById(articleId);
     }
 
+    @DisplayName("게시글 수를 조회하면, 게시글 수를 반환한다")
+    @Test
+    void givenNothing_whenCountingArticles_thenReturnsArticleCount() {
+        // GivenAdd
+        long expected = 0L;
+        given(boardsRepository.count()).willReturn(expected);
+
+        // When
+        long actual = sut.getBoardsCount();
+
+        // Then
+        assertThat(actual).isEqualTo(expected);
+        then(boardsRepository).should().count();
+    }
 
     private UserAccount createUserAccount() {
         return UserAccount.of(

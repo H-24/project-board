@@ -44,10 +44,11 @@ public class BoardsController {
     }
 
     @GetMapping("/{articleId}")
-    public String boards(@PathVariable("articleId") Long articleId, ModelMap model) {
+    public String boards(@PathVariable("articleId") Long articleId, ModelMap map) {
         ArticleWithCommentsResponse board = ArticleWithCommentsResponse.from(boardService.getBoard(articleId));
-        model.addAttribute("boards", board);
-        model.addAttribute("articleComments", board.articleCommentsResponse());
+        map.addAttribute("boards", board);
+        map.addAttribute("articleComments", board.articleCommentsResponse());
+        map.addAttribute("totalCount", boardService.getBoardsCount());
 
         return "boards/details";
     }

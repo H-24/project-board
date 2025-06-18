@@ -90,19 +90,26 @@ class BoardsControllerTest {
         then(paginationService).should().getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages());
     }
 
-    @DisplayName("[view] [GET] 게시글 리스트 상세 페이지 - 정상 호출")
+    @DisplayName("[view] [GET] 게시글 페이지 - 정상 호출")
     @Test
     public void givenNothing_whenRequestingBoardView_thenReturnsBoardView() throws Exception {
         // Given
         Long boardId = 1L;
+        long totalCount = 1L;
+
         given(boardService.getBoard(boardId)).willReturn(createArticleWithCommentsDto());
+        given(boardService.getBoardsCount()).willReturn(totalCount);
+
         // When & Then
         mvc.perform(get("/boards/" + boardId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("boards/details"))
-                .andExpect(model().attributeExists("boards"));
+                .andExpect(model().attributeExists("boards"))
+                .andExpect(model().attributeExists("articleComments"))
+                .andExpect(model().attribute("totalCount", totalCount));
         then(boardService).should().getBoard(boardId);
+        then(boardService).should().getBoardsCount();
     }
 
     @Disabled("구현중")
