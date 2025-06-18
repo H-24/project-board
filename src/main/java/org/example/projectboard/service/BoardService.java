@@ -1,6 +1,5 @@
 package org.example.projectboard.service;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,5 +67,9 @@ public class BoardService {
 
     public void deleteArticle(long articleId) {
         boardsRepository.deleteById(articleId);
+    }
+
+    public long getBoardsCount() {
+        return boardsRepository.count();
     }
 }
