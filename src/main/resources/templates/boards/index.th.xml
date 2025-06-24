@@ -3,35 +3,64 @@
     <attr sel="#header" th:replace="header :: header" />
     <attr sel="#footer" th:replace="footer :: footer" />
 
-    <attr sel="#boards-table">
-        <attr sel="tbody" th:remove="all-but-first">
-            <attr sel="tr[0]" th:each="board : ${boards}">
-                <attr sel="td.title/a" th:text="${board.title}" th:href="@{'/boards/' + ${board.id}}" />
-                <attr sel="td.hashtag" th:text="${board.hashtag}" />
-                <attr sel="td.user-id" th:text="${board.nickname}" />
-                <attr sel="td.created-at/time" th:datetime="${board.createdAt}" th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}" />
+    <attr sel="main" th:object="${boards}">
+        <attr sel="#boards-table">
+            <attr sel="thead/tr">
+                <attr sel="th.title/a"
+                      th:text="'제목' + (*{sort.getOrderFor('title')} != null ? (*{sort.getOrderFor('title').direction.name} == 'ASC' ? ' ▲' : ' ▼') : '')"
+                      th:href="@{/boards(
+                    page=${boards.number},
+                    sort='title' + (*{sort.getOrderFor('title')} != null ? (*{sort.getOrderFor('title').direction.name} != 'DESC' ? ',desc' : '') : '')
+                )}"/>
+                <attr sel="th.hashtag/a"
+                      th:text="'해시태그' + (*{sort.getOrderFor('hashtag')} != null ? (*{sort.getOrderFor('hashtag').direction.name} == 'ASC' ? ' ▲' : ' ▼') : '')"
+                      th:href="@{/boards(
+                    page=${boards.number},
+                    sort='hashtag' + (*{sort.getOrderFor('hashtag')} != null ? (*{sort.getOrderFor('hashtag').direction.name} != 'DESC' ? ',desc' : '') : '')
+                )}"/>
+                <attr sel="th.user-id/a"
+                      th:text="'작성자' + (*{sort.getOrderFor('userAccount.userId')} != null ? (*{sort.getOrderFor('userAccount.userId').direction.name} == 'ASC' ? ' ▲' : ' ▼') : '')"
+                      th:href="@{/boards(
+                    page=${boards.number},
+                    sort='userAccount.userId' + (*{sort.getOrderFor('userAccount.userId')} != null ? (*{sort.getOrderFor('userAccount.userId').direction.name} != 'DESC' ? ',desc' : '') : '')
+                )}"/>
+                <attr sel="th.created-at/a"
+                      th:text="'작성일' + (*{sort.getOrderFor('createdAt')} != null ? (*{sort.getOrderFor('createdAt').direction.name} == 'ASC' ? ' ▲' : ' ▼') : '')"
+                      th:href="@{/boards(
+                    page=${boards.number},
+                    sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : '') : '')
+                )}"/>
+            </attr>
+
+            <attr sel="tbody" th:remove="all-but-first">
+                <attr sel="tr[0]" th:each="board : ${boards}">
+                    <attr sel="td.title/a" th:text="${board.title}" th:href="@{'/boards/' + ${board.id}}" />
+                    <attr sel="td.hashtag" th:text="${board.hashtag}" />
+                    <attr sel="td.user-id" th:text="${board.nickname}" />
+                    <attr sel="td.created-at/time" th:datetime="${board.createdAt}" th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd')}" />
+                </attr>
             </attr>
         </attr>
-    </attr>
 
-    <attr sel="#pagination">
-        <attr sel="li[0]/a"
+        <attr sel="#pagination">
+            <attr sel="li[0]/a"
               th:text="'previous'"
               th:href="@{/boards(page=${boards.number - 1})}"
               th:class="'page-link' + (${boards.number} <= 0 ? ' disabled' : '')"
-        />
-        <attr sel="li[1]" th:class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
-            <attr sel="a"
+            />
+            <attr sel="li[1]" th:class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
+                <attr sel="a"
                   th:text="${pageNumber + 1}"
                   th:href="@{/boards(page=${pageNumber})}"
                   th:class="'page-link' + (${pageNumber} == ${boards.number} ? ' disabled' : '')"
-            />
-        </attr>
-        <attr sel="li[2]/a"
+                />
+            </attr>
+            <attr sel="li[2]/a"
               th:text="'next'"
               th:href="@{/boards(page=${boards.number + 1})}"
               th:class="'page-link' + (${boards.number} >= ${boards.totalPages - 1} ? ' disabled' : '')"
-        />
+            />
+        </attr>
     </attr>
 
 </thlogic>

@@ -3,18 +3,21 @@
 INSERT INTO user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at, modified_by) values
     ('win', 'pyj0101', 'win', 'winter@mail.com', 'I am win.', now(), 'win', now(), 'win');
 
+INSERT INTO user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at, modified_by) values
+    ('jake', 'pyj1115', 'jake', 'jake@mail.com', 'I am jake.', now(), 'jake', now(), 'jake');
+
 -- Boards 테이블에 게시글 2개 삽입
 INSERT INTO boards (user_account_id, title, content, hashtag, created_by, created_at, modified_by, modified_at)
 VALUES (1, '첫 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 개화입니다.', '#개화', 'tester', NOW(), 'tester', NOW());
 
 INSERT INTO boards (user_account_id, title, content, hashtag, created_by, created_at, modified_by, modified_at)
-VALUES (1, '두 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Reality입니다.', '#reality', 'tester', NOW(), 'tester', NOW());
+VALUES (2, '두 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Reality입니다.', '#reality', 'tester', NOW(), 'tester', NOW());
 
 INSERT INTO boards (user_account_id, title, content, hashtag, created_by, created_at, modified_by, modified_at)
 VALUES (1, '세 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Bring the heat back입니다.', '#bringthehitback', 'tester', NOW(), 'tester', NOW());
 
 INSERT INTO boards (user_account_id, title, content, hashtag, created_by, created_at, modified_by, modified_at)
-VALUES (1, '네 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 One in a billion입니다.', '#oneinabillion', 'tester', NOW(), 'tester', NOW());
+VALUES (2, '네 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 One in a billion입니다.', '#oneinabillion', 'tester', NOW(), 'tester', NOW());
 
 INSERT INTO boards (user_account_id, title, content, hashtag, created_by, created_at, modified_by, modified_at)
 VALUES (1, '다섯 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Whiplash입니다.', '#whiplash', 'tester', NOW(), 'tester', NOW());
@@ -23,7 +26,7 @@ INSERT INTO boards (user_account_id, title, content, hashtag, created_by, create
 VALUES (1, '여섯 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Supernova입니다.', '#supernova', 'tester', NOW(), 'tester', NOW());
 
 INSERT INTO boards (user_account_id, title, content, hashtag, created_by, created_at, modified_by, modified_at)
-VALUES (1, '일곱 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Loose입니다.', '#loose', 'tester', NOW(), 'tester', NOW());
+VALUES (2, '일곱 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Loose입니다.', '#loose', 'tester', NOW(), 'tester', NOW());
 
 INSERT INTO boards (user_account_id, title, content, hashtag, created_by, created_at, modified_by, modified_at)
 VALUES (1, '여덟 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 잉걸입니다.', '#잉걸', 'tester', NOW(), 'tester', NOW());
@@ -218,7 +221,7 @@ INSERT INTO boards (user_account_id, title, content, hashtag, created_by, create
 VALUES (1, '일흔 한 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Blue입니다.', '#blue', 'tester', NOW(), 'tester', NOW());
 
 INSERT INTO boards (user_account_id, title, content, hashtag, created_by, created_at, modified_by, modified_at)
-VALUES (1, '일흔 두 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Blue입니다.', '#blue', 'tester', NOW(), 'tester', NOW());
+VALUES (2, '일흔 두 번째 게시글', '테스트용 내용입니다. 지금 듣고 있는 노래는 Blue입니다.', '#blue', 'tester', NOW(), 'tester', NOW());
 
 -- ArticleComments 테이블에 댓글 삽입 (boards_id가 외래키)
 INSERT INTO article_comments (boards_id, user_account_id, content, created_at, created_by, modified_at, modified_by)
