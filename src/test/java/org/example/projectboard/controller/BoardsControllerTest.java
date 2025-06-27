@@ -1,6 +1,7 @@
 package org.example.projectboard.controller;
 
 import org.example.projectboard.config.SecurityConfig;
+import org.example.projectboard.domain.type.SearchType;
 import org.example.projectboard.dto.ArticleWithCommentsDto;
 import org.example.projectboard.dto.UserAccountDto;
 import org.example.projectboard.service.BoardService;
@@ -56,8 +57,33 @@ class BoardsControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("boards/index"))
                 .andExpect(model().attributeExists("boards"))
-                .andExpect(model().attributeExists("paginationBarNumbers"));
+                .andExpect(model().attributeExists("paginationBarNumbers"))
+                .andExpect(model().attributeExists("searchType"));
         then(boardService).should().searchBoards(eq(null), eq(null), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+    }
+
+    @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 검색어와 함께 호출")
+    @Test
+    public void givenSearchKeyword_whenSearchingArticlesView_thenReturnsArticlesView() throws Exception {
+        // Given
+        SearchType searchType = SearchType.TITLE;
+        String searchValue = "title";
+        given(boardService.searchBoards(eq(searchType), eq(searchValue), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
+
+        // When & Then
+        mvc.perform(
+                        get("/boards")
+                                .queryParam("searchType", searchType.name())
+                                .queryParam("searchValue", searchValue)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("boards/index"))
+                .andExpect(model().attributeExists("boards"))
+                .andExpect(model().attributeExists("searchType"));
+        then(boardService).should().searchBoards(eq(searchType), eq(searchValue), any(Pageable.class));
         then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
 

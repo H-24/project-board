@@ -39,6 +39,7 @@ public class BoardsController {
 
         map.addAttribute("boards", boards);
         map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("searchType", SearchType.values());
 
         return "boards/index";
     }
