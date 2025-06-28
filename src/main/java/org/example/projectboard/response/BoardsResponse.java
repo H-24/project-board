@@ -2,7 +2,6 @@ package org.example.projectboard.response;
 
 import org.example.projectboard.dto.BoardsDto;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record BoardsResponse(
@@ -13,7 +12,7 @@ public record BoardsResponse(
         LocalDateTime createdAt,
         String email,
         String nickname
-) implements Serializable {
+) {
 
     public static BoardsResponse of(Long id, String title, String content, String hashtag, LocalDateTime createdAt, String email, String nickname) {
         return new BoardsResponse(id, title, content, hashtag, createdAt, email, nickname);

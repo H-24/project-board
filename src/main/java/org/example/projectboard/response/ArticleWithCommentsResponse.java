@@ -2,7 +2,6 @@ package org.example.projectboard.response;
 
 import org.example.projectboard.dto.ArticleWithCommentsDto;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.LinkedHashSet;
@@ -17,7 +16,7 @@ public record ArticleWithCommentsResponse(
         String email,
         String nickname,
         Set<ArticleCommentsResponse> articleCommentsResponse
-) implements Serializable {
+) {
 
     public static ArticleWithCommentsResponse of(Long id, String title, String content, String hashtag, LocalDateTime createdAt, String email, String nickname, Set<ArticleCommentsResponse> articleCommentsResponse) {
         return new ArticleWithCommentsResponse(id, title, content, hashtag, createdAt, email, nickname, articleCommentsResponse);
