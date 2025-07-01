@@ -4,10 +4,12 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.projectboard.domain.Boards;
-import org.example.projectboard.domain.type.SearchType;
+import org.example.projectboard.domain.UserAccount;
+import org.example.projectboard.domain.constant.SearchType;
 import org.example.projectboard.dto.ArticleWithCommentsDto;
 import org.example.projectboard.dto.BoardsDto;
 import org.example.projectboard.repository.BoardsRepository;
+import org.example.projectboard.repository.UserAccountRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ public class BoardService {
 
 
     private final BoardsRepository boardsRepository;
+    private final UserAccountRepository userAccountRepository;
 
     @Transactional(readOnly = true)
     public Page<BoardsDto> searchBoards(SearchType searchType, String searchKeyword, Pageable pageable) {
@@ -40,19 +43,27 @@ public class BoardService {
 
     // 단건조회
     @Transactional(readOnly = true)
-    public ArticleWithCommentsDto getBoard(Long articleId) {
+    public ArticleWithCommentsDto getArticleWithComments(Long articleId) {
         return boardsRepository.findById(articleId)
                 .map(ArticleWithCommentsDto::from)
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
-    public void saveArticle(BoardsDto dto) {
-        boardsRepository.save(dto.toEntity());
+    @Transactional(readOnly = true)
+    public BoardsDto getBoards(Long articleId) {
+        return boardsRepository.findById(articleId)
+                .map(BoardsDto::from)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
-    public void updateArticle(BoardsDto dto) {
+    public void saveBoards(BoardsDto dto) {
+        UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().id());
+        boardsRepository.save(dto.toEntity(userAccount));
+    }
+
+    public void updateBoards(Long articleId, BoardsDto dto) {
         try {
-            Boards board = boardsRepository.getReferenceById(dto.id());
+            Boards board = boardsRepository.getReferenceById(articleId);
             if (dto.title() != null) {
                 board.setTitle(dto.title());
             }
@@ -65,7 +76,7 @@ public class BoardService {
         }
     }
 
-    public void deleteArticle(long articleId) {
+    public void deleteBoards(long articleId) {
         boardsRepository.deleteById(articleId);
     }
 

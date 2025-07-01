@@ -3,7 +3,6 @@ package org.example.projectboard.dto;
 import org.example.projectboard.domain.Boards;
 import org.example.projectboard.domain.UserAccount;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -18,7 +17,12 @@ public record BoardsDto(
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime modifiedAt,
-        String modifiedBy) implements Serializable {
+        String modifiedBy) {
+
+    public static BoardsDto of(UserAccountDto userAccountDto, String title, String content, String hashtag) {
+        return new BoardsDto(null, userAccountDto, title, content, hashtag, null, null, null, null);
+    }
+
     public static BoardsDto of(
             Long id,
             UserAccountDto userAccountDto,
@@ -47,9 +51,9 @@ public record BoardsDto(
     }
 
     // dto 정보로 entity를 새로 하나 생성해서 저장
-    public Boards toEntity() {
+    public Boards toEntity(UserAccount userAccount) {
         return Boards.of(
-                userAccountDto.toEntity(),
+                userAccount,
                 title,
                 content,
                 hashtag

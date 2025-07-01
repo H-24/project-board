@@ -3,11 +3,12 @@ package org.example.projectboard.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.projectboard.domain.Boards;
 import org.example.projectboard.domain.UserAccount;
-import org.example.projectboard.domain.type.SearchType;
+import org.example.projectboard.domain.constant.SearchType;
 import org.example.projectboard.dto.ArticleWithCommentsDto;
 import org.example.projectboard.dto.BoardsDto;
 import org.example.projectboard.dto.UserAccountDto;
 import org.example.projectboard.repository.BoardsRepository;
+import org.example.projectboard.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -29,8 +31,9 @@ import static org.mockito.BDDMockito.*;
 class BoardServiceTest {
 
     @InjectMocks private BoardService sut;
-    @Mock private BoardsRepository boardsRepository;
 
+    @Mock private BoardsRepository boardsRepository;
+    @Mock private UserAccountRepository userAccountRepository;
 
     @DisplayName("검색어 없이 게시글을 검색하면, 게시글 페이지를 반환한다")
     @Test
@@ -65,15 +68,16 @@ class BoardServiceTest {
         then(boardsRepository).should().findByTitleContaining(searchKeyword, pageable);
     }
 
-    @DisplayName("게시글을 조회하면, 해당 게시글 반환")
+    @DisplayName("게시글 ID로 조회하면, 댓글 달긴 게시글을 반환한다.")
     @Test
-    void givenArticleId_whenGettingArticles_thenReturnsArticleList() {
+    void givenArticleId_whenSearchingArticleWithComments_thenReturnsArticleWithComments() {
+        // Given
         Long articleId = 1L;
         Boards boards = createBoards();
         given(boardsRepository.findById(articleId)).willReturn(Optional.of(boards));
 
         // When
-        ArticleWithCommentsDto dto = sut.getBoard(articleId);
+        ArticleWithCommentsDto dto = sut.getArticleWithComments(articleId);
 
         // Then
         assertThat(dto)
@@ -83,7 +87,42 @@ class BoardServiceTest {
         then(boardsRepository).should().findById(articleId);
     }
 
-    @DisplayName("없는 게시글을 조회하면, 예외를 던진다.")
+    @DisplayName("댓글 달린 게시글이 없으면, 예외를 던진다.")
+    @Test
+    void givenNonexistentArticleId_whenSearchingArticleWithComments_thenThrowsException() {
+        // Given
+        Long articleId = 0L;
+        given(boardsRepository.findById(articleId)).willReturn(Optional.empty());
+
+        // When
+        Throwable t = catchThrowable(() -> sut.getArticleWithComments(articleId));
+
+        // Then
+        assertThat(t)
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("게시글이 없습니다 - articleId: " + articleId);
+        then(boardsRepository).should().findById(articleId);
+    }
+
+    @DisplayName("게시글을 조회하면, 해당 게시글 반환")
+    @Test
+    void givenArticleId_whenGettingArticles_thenReturnsArticleList() {
+        Long articleId = 1L;
+        Boards boards = createBoards();
+        given(boardsRepository.findById(articleId)).willReturn(Optional.of(boards));
+
+        // When
+        BoardsDto dto = sut.getBoards(articleId);
+
+        // Then
+        assertThat(dto)
+                .hasFieldOrPropertyWithValue("title", boards.getTitle())
+                .hasFieldOrPropertyWithValue("content", boards.getContent())
+                .hasFieldOrPropertyWithValue("hashtag", boards.getHashtag());
+        then(boardsRepository).should().findById(articleId);
+    }
+
+    @DisplayName("게시글이 없으면, 예외를 던진다.")
     @Test
     void givenNonexistentArticleId_whenSearchingArticle_thenThrowsException() {
         // Given
@@ -91,7 +130,7 @@ class BoardServiceTest {
         given(boardsRepository.findById(articleId)).willReturn(Optional.empty());
 
         // When
-        Throwable t = catchThrowable(() -> sut.getBoard(articleId));
+        Throwable t = catchThrowable(() -> sut.getArticleWithComments(articleId));
 
         // Then
         assertThat(t)
@@ -105,12 +144,14 @@ class BoardServiceTest {
     void givenArticleInfo_whenPostingArticle_thenSaveArticle() {
         //Given
         BoardsDto dto = createBoardsDto();
+        given(userAccountRepository.getReferenceById(dto.userAccountDto().id())).willReturn(createUserAccount());
         given(boardsRepository.save(any(Boards.class))).willReturn(createBoards());
 
         //when
-        sut.saveArticle(dto);
+        sut.saveBoards(dto);
 
         //Then
+        then(userAccountRepository).should().getReferenceById(dto.userAccountDto().id());
         then(boardsRepository).should().save(any(Boards.class));
     }
 
@@ -123,7 +164,7 @@ class BoardServiceTest {
         given(boardsRepository.getReferenceById(dto.id())).willReturn(boards);
 
         //when
-        sut.updateArticle(dto);
+        sut.updateBoards(dto.id(), dto);
 
         //Then
         assertThat(boards)
@@ -141,7 +182,7 @@ class BoardServiceTest {
         given(boardsRepository.getReferenceById(dto.id())).willThrow(EntityNotFoundException.class);
 
         // When
-        sut.updateArticle(dto);
+        sut.updateBoards(dto.id(), dto);
 
         // Then
         then(boardsRepository).should().getReferenceById(dto.id());
@@ -155,7 +196,7 @@ class BoardServiceTest {
         willDoNothing().given(boardsRepository).deleteById(articleId);
 
         //when
-        sut.deleteArticle(1L);
+        sut.deleteBoards(1L);
 
         //Then
         then(boardsRepository).should().deleteById(articleId);
@@ -187,15 +228,19 @@ class BoardServiceTest {
     }
 
     private Boards createBoards() {
-        return Boards.of(
+       Boards boards = Boards.of(
                 createUserAccount(),
                 "title",
                 "content",
                 "#java"
         );
+       ReflectionTestUtils.setField(boards, "id", 1L);
+
+        return boards;
     }
 
     private BoardsDto createBoardsDto() {
+
         return createBoardsDto("title", "content", "#java");
     }
 
