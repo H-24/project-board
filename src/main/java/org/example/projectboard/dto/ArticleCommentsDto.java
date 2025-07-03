@@ -2,6 +2,7 @@ package org.example.projectboard.dto;
 
 import org.example.projectboard.domain.ArticleComments;
 import org.example.projectboard.domain.Boards;
+import org.example.projectboard.domain.UserAccount;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,7 +18,12 @@ public record ArticleCommentsDto(
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime modifiedAt,
-        String modifiedBy) implements Serializable {
+        String modifiedBy) {
+
+  public static ArticleCommentsDto of(Long articleId, UserAccountDto userAccountDto, String content) {
+
+    return new ArticleCommentsDto(null, articleId, userAccountDto, content, null, null, null, null);
+  }
 
   public static ArticleCommentsDto of(
           Long id,
@@ -44,10 +50,10 @@ public record ArticleCommentsDto(
             );
   }
 
-  public ArticleComments toEntity(Boards entity) {
+  public ArticleComments toEntity(Boards boards, UserAccount userAccount) {
     return ArticleComments.of(
-            entity,
-            userAccountDto.toEntity(),
+            boards,
+            userAccount,
             content
     );
   }
