@@ -4,9 +4,12 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.projectboard.domain.ArticleComments;
+import org.example.projectboard.domain.Boards;
+import org.example.projectboard.domain.UserAccount;
 import org.example.projectboard.dto.ArticleCommentsDto;
 import org.example.projectboard.repository.ArticleCommentsRepository;
 import org.example.projectboard.repository.BoardsRepository;
+import org.example.projectboard.repository.UserAccountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +21,9 @@ import java.util.List;
 @Service
 public class ArticleCommentService {
 
-    private ArticleCommentsRepository articleCommentsRepository;
-    private BoardsRepository boardsRepository;
+    private final UserAccountRepository userAccountRepository;
+    private final ArticleCommentsRepository articleCommentsRepository;
+    private final BoardsRepository boardsRepository;
 
     @Transactional(readOnly = true)
     public List<ArticleCommentsDto> searchArticleComments(Long articleId) {
@@ -32,7 +36,9 @@ public class ArticleCommentService {
 
     public void saveArticleComment(ArticleCommentsDto dto) {
         try {
-            articleCommentsRepository.save(dto.toEntity(boardsRepository.getReferenceById(dto.articleId())));
+            Boards boards = boardsRepository.getReferenceById(dto.articleId());
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().id());
+            articleCommentsRepository.save(dto.toEntity(boards, userAccount));
         } catch (EntityNotFoundException e) {
             log.warn("댓글 저장 실패. 댓글의 게시글을 찾을 수 없습니다. - dto: {}", dto);
         }
