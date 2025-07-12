@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
-<thlogic>
+<thlogic xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <attr sel="#header" th:replace="header :: header" />
     <attr sel="#footer" th:replace="footer :: footer" />
 
@@ -61,7 +62,7 @@
             </attr>
         </attr>
 
-        <attr sel="#write-article" th:href="@{/boards/form}" />
+        <attr sel="#write-article" sec:authorize="isAuthenticated()" th:href="@{/boards/form}" />
 
         <attr sel="#pagination">
             <attr sel="li[0]/a"
