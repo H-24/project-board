@@ -4,7 +4,6 @@ import org.example.projectboard.domain.ArticleComments;
 import org.example.projectboard.domain.Boards;
 import org.example.projectboard.domain.UserAccount;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
