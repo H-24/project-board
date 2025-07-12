@@ -1,6 +1,6 @@
 package org.example.projectboard.controller;
 
-import org.example.projectboard.config.SecurityConfig;
+import org.example.projectboard.config.TestSecurityConfig;
 import org.example.projectboard.domain.constant.FormStatus;
 import org.example.projectboard.domain.constant.SearchType;
 import org.example.projectboard.dto.ArticleWithCommentsDto;
@@ -23,6 +23,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -36,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Import({SecurityConfig.class, FormDataEncoder.class})
+@Import({TestSecurityConfig.class, FormDataEncoder.class})
 @DisplayName("View 컨트롤러 - 게시글")
 @WebMvcTest(BoardsController.class) // 슬라이스 테스트(특정 계층만 테스트-여기서는 controller)
 class BoardsControllerTest {
@@ -53,26 +56,22 @@ class BoardsControllerTest {
         this.formDataEncoder = formDataEncoder;
     }
 
-    @DisplayName("[view] [GET] 게시글 리스트 (게시판) 페이지 - 정상 호출")
+    @DisplayName("[view][GET] 게시글 페이지 - 인증 없을 땐 로그인 페이지로 이동")
     @Test
-    public void givenNothing_whenRequestingBoardsView_thenReturnsBoardsView() throws Exception {
+    void givenNothing_whenRequestingArticlePage_thenRedirectsToLoginPage() throws Exception {
         // Given
-        given(boardService.searchBoards(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
-        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
+        long articleId = 1L;
 
         // When & Then
-        mvc.perform(get("/boards"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("boards/index"))
-                .andExpect(model().attributeExists("boards"))
-                .andExpect(model().attributeExists("paginationBarNumbers"))
-                .andExpect(model().attributeExists("searchType"));
-        then(boardService).should().searchBoards(eq(null), eq(null), any(Pageable.class));
-        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+        mvc.perform(get("/boards/" + articleId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+        then(boardService).shouldHaveNoInteractions();
+        then(boardService).shouldHaveNoInteractions();
     }
 
-    @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 검색어와 함께 호출")
+    @WithMockUser
+    @DisplayName("[view][GET] 게시글 페이지 - 정상 호출, 인증된 사용자")
     @Test
     public void givenSearchKeyword_whenSearchingArticlesView_thenReturnsArticlesView() throws Exception {
         // Given
@@ -125,25 +124,26 @@ class BoardsControllerTest {
         then(paginationService).should().getPaginationBarNumbers(pageable.getPageNumber(), Page.empty().getTotalPages());
     }
 
-    @DisplayName("[view] [GET] 게시글 페이지 - 정상 호출")
+    @WithMockUser
+    @DisplayName("[view] [GET] 게시글 페이지 - 정상 호출, 인증된 사용자")
     @Test
     public void givenNothing_whenRequestingBoardView_thenReturnsBoardView() throws Exception {
         // Given
-        Long boardId = 1L;
+        Long articleId = 1L;
         long totalCount = 1L;
 
-        given(boardService.getArticleWithComments(boardId)).willReturn(createArticleWithCommentsDto());
+        given(boardService.getArticleWithComments(articleId)).willReturn(createArticleWithCommentsDto());
         given(boardService.getBoardsCount()).willReturn(totalCount);
 
         // When & Then
-        mvc.perform(get("/boards/" + boardId))
+        mvc.perform(get("/boards/" + articleId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("boards/details"))
                 .andExpect(model().attributeExists("boards"))
                 .andExpect(model().attributeExists("articleComments"))
                 .andExpect(model().attribute("totalCount", totalCount));
-        then(boardService).should().getArticleWithComments(boardId);
+        then(boardService).should().getArticleWithComments(articleId);
         then(boardService).should().getBoardsCount();
     }
 
@@ -173,6 +173,7 @@ class BoardsControllerTest {
                 .andExpect(view().name("boards/search-hashtag"));
     }
 
+    @WithMockUser
     @DisplayName("[view][GET] 새 게시글 작성 페이지")
     @Test
     void givenNothing_whenRequesting_thenReturnsNewArticlePage() throws Exception {
@@ -186,6 +187,7 @@ class BoardsControllerTest {
                 .andExpect(model().attribute("formStatus", FormStatus.CREATE));
     }
 
+    @WithUserDetails(value = "winTest", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("[view][POST] 새 게시글 등록 - 정상 호출")
     @Test
     void givenNewArticleInfo_whenRequesting_thenSavesNewArticle() throws Exception {
@@ -206,7 +208,21 @@ class BoardsControllerTest {
         then(boardService).should().saveBoards(any(BoardsDto.class));
     }
 
-    @DisplayName("[view][GET] 게시글 수정 페이지")
+    @DisplayName("[view][GET] 게시글 수정 페이지 - 인증 없을 때는 로그인 페이지로 이동")
+    @Test
+    void givenNothing_whenRequesting_thenRedirectsToLoginPage() throws Exception {
+        // Given
+        long articleId = 1L;
+
+        // When & Then
+        mvc.perform(get("/boards/" + articleId + "/form"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
+        then(boardService).shouldHaveNoInteractions();
+    }
+
+    @WithMockUser
+    @DisplayName("[view][GET] 게시글 수정 페이지 - 정상 호출, 인증된 사용자")
     @Test
     void givenNothing_whenRequesting_thenReturnsUpdatedArticlePage() throws Exception {
         // Given
@@ -224,6 +240,7 @@ class BoardsControllerTest {
         then(boardService).should().getBoards(articleId);
     }
 
+    @WithUserDetails(value = "winTest", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("[view][POST] 게시글 수정 - 정상 호출")
     @Test
     void givenUpdatedArticleInfo_whenRequesting_thenUpdatesNewArticle() throws Exception {
@@ -245,12 +262,14 @@ class BoardsControllerTest {
         then(boardService).should().updateBoards(eq(articleId), any(BoardsDto.class));
     }
 
+    @WithUserDetails(value = "winTest", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @DisplayName("[view][POST] 게시글 삭제 - 정상 호출")
     @Test
     void givenArticleIdToDelete_whenRequesting_thenDeletesArticle() throws Exception {
         // Given
         long articleId = 1L;
-        willDoNothing().given(boardService).deleteBoards(articleId);
+        String userId = "winTest";
+        willDoNothing().given(boardService).deleteBoards(articleId, userId);
 
         // When & Then
         mvc.perform(
@@ -261,7 +280,7 @@ class BoardsControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/boards"))
                 .andExpect(redirectedUrl("/boards"));
-        then(boardService).should().deleteBoards(articleId);
+        then(boardService).should().deleteBoards(articleId, userId);
     }
 
 
@@ -282,23 +301,20 @@ class BoardsControllerTest {
                 "content",
                 "#java",
                 LocalDateTime.now(),
-                "uno",
+                "win",
                 LocalDateTime.now(),
-                "uno"
+                "win"
         );
     }
 
     private UserAccountDto createUserAccountDto() {
-        return UserAccountDto.of(1L,
-                "uno",
+        return UserAccountDto.of(
+                1L,
+                "win",
                 "pw",
-                "uno@mail.com",
-                "Uno",
-                "memo",
-                LocalDateTime.now(),
-                "uno",
-                LocalDateTime.now(),
-                "uno"
+                "win@mail.com",
+                "win",
+                "memo"
         );
     }
 }

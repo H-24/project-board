@@ -3,8 +3,8 @@ package org.example.projectboard.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.projectboard.domain.constant.FormStatus;
 import org.example.projectboard.domain.constant.SearchType;
-import org.example.projectboard.dto.UserAccountDto;
 import org.example.projectboard.dto.request.BoardsRequest;
+import org.example.projectboard.dto.security.BoardPrincipal;
 import org.example.projectboard.response.ArticleWithCommentsResponse;
 import org.example.projectboard.response.BoardsResponse;
 import org.example.projectboard.service.BoardService;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -62,11 +63,11 @@ public class BoardsController {
     }
 
     @PostMapping("/form")
-    public String postNewArticle(BoardsRequest boardsRequest) {
-        // TODO: 인증 정보를 넣어줘야 한다.
-        boardService.saveBoards(boardsRequest.toDto(UserAccountDto.of(
-                1L, "win", "asdf1234", "uno@mail.com", "Uno", "memo", null, null, null, null
-        )));
+    public String postNewArticle(
+            @AuthenticationPrincipal BoardPrincipal boardPrincipal,
+            BoardsRequest boardsRequest
+            ) {
+        boardService.saveBoards(boardsRequest.toDto(boardPrincipal.toDto()));
 
         return "redirect:/boards";
     }
@@ -82,19 +83,22 @@ public class BoardsController {
     }
 
     @PostMapping ("/{articleId}/form")
-    public String updateArticle(@PathVariable("articleId") Long articleId, BoardsRequest boardsRequest) {
-        // TODO: 인증 정보를 넣어줘야 한다.
-        boardService.updateBoards(articleId, boardsRequest.toDto(UserAccountDto.of(
-                1L, "uno", "asdf1234", "win@mail.com", "Win", "memo", null, null, null, null
-        )));
+    public String updateArticle(
+            @PathVariable("articleId") Long articleId,
+           @AuthenticationPrincipal BoardPrincipal boardPrincipal,
+            BoardsRequest boardsRequest) {
+
+        boardService.updateBoards(articleId, boardsRequest.toDto(boardPrincipal.toDto()));
 
         return "redirect:/boards/" + articleId;
     }
 
     @PostMapping ("/{articleId}/delete")
-    public String deleteArticle(@PathVariable("articleId") Long articleId) {
-        // TODO: 인증 정보를 넣어줘야 한다.
-        boardService.deleteBoards(articleId);
+    public String deleteArticle(
+            @PathVariable("articleId") Long articleId,
+            @AuthenticationPrincipal BoardPrincipal boardPrincipal
+    ) {
+        boardService.deleteBoards(articleId, boardPrincipal.getUsername());
 
         return "redirect:/boards";
     }
