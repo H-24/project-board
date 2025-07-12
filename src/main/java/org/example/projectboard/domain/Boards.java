@@ -58,8 +58,8 @@ public class Boards extends AuditingFields {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Boards boards)) return false;
-        return id !=null && Objects.equals(id, boards.id);
+        if (!(o instanceof Boards that)) return false;
+        return id !=null && Objects.equals(id, that.getId());
     }
 
     @Override

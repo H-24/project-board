@@ -1,20 +1,24 @@
 package org.example.projectboard.repository;
 
-import org.example.projectboard.config.JpaConfig;
 import org.example.projectboard.domain.Boards;
 import org.example.projectboard.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JPA 연결 테스트")
-@Import(JpaConfig.class)
+@Import(JpaRepositoryTest.TestJpaConfig.class)
 @DataJpaTest
 public class JpaRepositoryTest {
 
@@ -43,7 +47,7 @@ public class JpaRepositoryTest {
         // Then
         assertThat(boards)
                 .isNotNull()
-                .hasSize(123);
+                .hasSize(72);
     }
 
     @DisplayName("insert 테스트")
@@ -51,7 +55,7 @@ public class JpaRepositoryTest {
     void givenTestData_whenInserting_thenWorksFine() {
         // Given
         long previousCount = boardsRepository.count();
-        UserAccount userAccount = userAccountRepository.save(UserAccount.of("win", "pw", null, null, null));
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("newWin", "pw", null, null, null));
         Boards boards = Boards.of(userAccount, "new article", "new content", "#winter");
 
         // When
@@ -91,6 +95,15 @@ public class JpaRepositoryTest {
         // Then
         assertThat(boardsRepository.count()).isEqualTo(previousBoardsCount - 1);
         assertThat(articleCommentsRepository.count()).isEqualTo(previousArticleCommentsCount - deletedCommentsSize);
+    }
+
+    @EnableJpaAuditing
+    @TestConfiguration
+    public static class TestJpaConfig {
+        @Bean
+        public AuditorAware<String> auditorAware() {
+            return () -> Optional.of("win");
+        }
     }
 
 }

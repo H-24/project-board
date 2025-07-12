@@ -19,6 +19,8 @@ public interface ArticleCommentsRepository extends
         QuerydslBinderCustomizer<QArticleComments> {
 
     List<ArticleComments> findByBoards_Id(Long articleId);
+    void deleteByIdAndUserAccount_UserId(Long articleCommentId, String userId);
+
     @Override
     default void customize(QuerydslBindings bindings, QArticleComments root) {
         bindings.excludeUnlistedProperties(true);
@@ -27,4 +29,5 @@ public interface ArticleCommentsRepository extends
         bindings.bind(root.createdAt).first(DateTimeExpression::eq);
         bindings.bind(root.createdBy).first(StringExpression::containsIgnoreCase);
     }
+
 }

@@ -24,6 +24,8 @@ public interface BoardsRepository extends
     Page<Boards> findByUserAccount_Nickname(String nickname, Pageable pageable);
     Page<Boards> findByHashtag(String hashtag, Pageable pageable);
 
+    void deleteByIdAndUserAccount_UserId(Long id, String userId);
+
     @Override
     default void customize(QuerydslBindings bindings, QBoards root) {
         bindings.excludeUnlistedProperties(true);

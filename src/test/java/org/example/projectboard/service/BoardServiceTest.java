@@ -162,6 +162,7 @@ class BoardServiceTest {
         Boards boards = createBoards();
         BoardsDto dto = createBoardsDto("새 타이틀", "새 내용", "#springboot");
         given(boardsRepository.getReferenceById(dto.id())).willReturn(boards);
+        given(userAccountRepository.getReferenceByUserId(dto.userAccountDto().userId())).willReturn(dto.userAccountDto().toEntity());
 
         //when
         sut.updateBoards(dto.id(), dto);
@@ -193,13 +194,14 @@ class BoardServiceTest {
     void givenArticleId_whenDeletingArticle_thenDeleteArticle() {
         //Given
         Long articleId = 1L;
-        willDoNothing().given(boardsRepository).deleteById(articleId);
+        String userId = "win";
+        willDoNothing().given(boardsRepository).deleteByIdAndUserAccount_UserId(articleId, userId);
 
         //when
-        sut.deleteBoards(1L);
+        sut.deleteBoards(1L, userId);
 
         //Then
-        then(boardsRepository).should().deleteById(articleId);
+        then(boardsRepository).should().deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
     @DisplayName("게시글 수를 조회하면, 게시글 수를 반환한다")
@@ -245,15 +247,16 @@ class BoardServiceTest {
     }
 
     private BoardsDto createBoardsDto(String title, String content, String hashtag) {
-        return BoardsDto.of(1L,
+        return BoardsDto.of(
+                1L,
                 createUserAccountDto(),
                 title,
                 content,
                 hashtag,
                 LocalDateTime.now(),
-                "Uno",
+                "Win",
                 LocalDateTime.now(),
-                "Uno");
+                "Win");
     }
 
     private UserAccountDto createUserAccountDto() {
@@ -263,11 +266,7 @@ class BoardServiceTest {
                 "password",
                 "win@mail.com",
                 "Win",
-                "This is memo",
-                LocalDateTime.now(),
-                "win",
-                LocalDateTime.now(),
-                "win"
+                "This is memo"
         );
     }
 
