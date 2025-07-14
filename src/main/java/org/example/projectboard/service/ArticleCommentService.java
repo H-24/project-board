@@ -37,7 +37,7 @@ public class ArticleCommentService {
     public void saveArticleComment(ArticleCommentsDto dto) {
         try {
             Boards boards = boardsRepository.getReferenceById(dto.articleId());
-            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().id());
+            UserAccount userAccount = userAccountRepository.getReferenceByUserId(dto.userAccountDto().userId());
             articleCommentsRepository.save(dto.toEntity(boards, userAccount));
         } catch (EntityNotFoundException e) {
             log.warn("댓글 저장 실패. 댓글의 게시글을 찾을 수 없습니다. - dto: {}", dto);
