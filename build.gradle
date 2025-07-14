@@ -70,7 +70,7 @@ clean {
 }
 
 bootJar {
-	archiveVersion.set("1.0.0")      // 또는 생략 가능
+	archiveVersion.set("1.0.1")      // 또는 생략 가능
 	archiveClassifier.set("")        // -plain 같은 꼬리표 제거
 }
 
