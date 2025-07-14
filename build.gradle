@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.example'
-version = '0.0.1-SNAPSHOT'
+version = 'v1.0.0'
 
 java {
 	toolchain {
@@ -67,4 +67,15 @@ sourceSets {
 // gradle clean 시에 QClass 디렉토리 삭제
 clean {
 	delete file(generated)
+}
+
+bootJar {
+	archiveVersion.set("1.0.0")      // 또는 생략 가능
+	archiveClassifier.set("")        // -plain 같은 꼬리표 제거
+}
+
+jar {
+	manifest {
+		attributes('Main-Class': 'org.example.projectboard.ProjectBoardApplication')
+	}
 }
