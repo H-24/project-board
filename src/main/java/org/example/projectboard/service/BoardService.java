@@ -57,7 +57,7 @@ public class BoardService {
     }
 
     public void saveBoards(BoardsDto dto) {
-        UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().id());
+        UserAccount userAccount = userAccountRepository.getReferenceByUserId(dto.userAccountDto().userId());
         boardsRepository.save(dto.toEntity(userAccount));
     }
 
