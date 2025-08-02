@@ -32,15 +32,17 @@ public class BoardsController {
     public String boards(
         @RequestParam(name ="searchType", required = false) SearchType searchType,
         @RequestParam(name = "searchValue", required = false) String searchValue,
+        @RequestParam(name = "q", required = false) String headerKeyword,
         @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
         ModelMap map
     ) {
-        Page<BoardsResponse> boards = boardService.searchBoards(searchType, searchValue, pageable).map(BoardsResponse::from);
+        Page<BoardsResponse> boards = boardService.searchBoards(searchType, searchValue, headerKeyword, pageable).map(BoardsResponse::from);
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), boards.getTotalPages());
 
         map.addAttribute("boards", boards);
         map.addAttribute("paginationBarNumbers", barNumbers);
         map.addAttribute("searchType", SearchType.values());
+        map.addAttribute("q", headerKeyword);
 
         return "boards/index";
     }

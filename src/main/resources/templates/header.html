@@ -15,9 +15,9 @@
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="/boards" class="nav-link px-2 text-secondary">Home</a></li>
             </ul>
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..."
-                       aria-label="Search">
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" th:action="@{/boards}" method="get">
+                <input type="search" name="q"
+                       class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search" th:value="${q}">
             </form>
             <div class="text-end">
                 <span id="username" class="text-white me-2">username</span>

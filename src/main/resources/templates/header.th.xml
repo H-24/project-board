@@ -2,7 +2,7 @@
 <thlogic xmlns:th="http://www.thymeleaf.org"
           xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<attr sel="#username" sec:authorize="isAuthenticated()" sec:authentication="name" />
+<attr sel="#username" sec:authorize="isAuthenticated()" th:text="${#authentication.name}" />
     <attr sel="#login" sec:authorize="!isAuthenticated()" th:href="@{/login}" />
     <attr sel="#logout" sec:authorize="isAuthenticated()" th:href="@{/logout}" />
 </thlogic>

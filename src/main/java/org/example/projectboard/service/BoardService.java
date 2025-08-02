@@ -1,9 +1,11 @@
 package org.example.projectboard.service;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.projectboard.domain.Boards;
+import org.example.projectboard.domain.QBoards;
 import org.example.projectboard.domain.UserAccount;
 import org.example.projectboard.domain.constant.SearchType;
 import org.example.projectboard.dto.ArticleWithCommentsDto;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,8 +29,19 @@ public class BoardService {
     private final UserAccountRepository userAccountRepository;
 
     @Transactional(readOnly = true)
-    public Page<BoardsDto> searchBoards(SearchType searchType, String searchKeyword, Pageable pageable) {
-        if (searchKeyword == null || searchKeyword.isEmpty()) {
+    public Page<BoardsDto> searchBoards(SearchType searchType, String searchKeyword, String headerKeyword, Pageable pageable) {
+        if (StringUtils.hasText(headerKeyword)) {
+            QBoards b = QBoards.boards;
+            BooleanExpression predicate = b.title.containsIgnoreCase(headerKeyword)
+                    .or(b.content.containsIgnoreCase(headerKeyword))
+                    .or(b.hashtag.containsIgnoreCase(headerKeyword))
+                    .or(b.userAccount.nickname.containsIgnoreCase(headerKeyword));
+            return boardsRepository.findAll(predicate, pageable)
+                    .map(BoardsDto::from);
+        }
+
+        if (!StringUtils.hasText(searchKeyword)) {
+
             return boardsRepository.findAll(pageable).map(BoardsDto::from);
         }
         // 검색어가 null 이거나 공백일때 페이징 쿼리(전체 게시물 목록) 반환
